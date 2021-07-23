@@ -8,7 +8,7 @@ using Kingdee.K3.FIN.AR.App.Report;
 
 namespace CustAccRptChange
 {
-    public class CustRptChange:AgingAnalysisService
+    public class CustRptChange : AgingAnalysisService
     {
         //定义临时表数组
         private string[] _customRptTempDt;
@@ -21,14 +21,14 @@ namespace CustAccRptChange
             var strDt = _customRptTempDt[0];
 
             //调用基类的方法,获取初步的查询结果赋值到临时表
-            base.BuilderReportSqlAndTempTable(filter, tableName);
+            base.BuilderReportSqlAndTempTable(filter, strDt);
 
             //对初步的查询结果进行处理,然后写回基类默认的存放查询结果的临时表
             var strSql = $@"
                                SELECT T1.*,T3.FCREDITAMOUNT FCREDIT
                                INTO {tableName}
                                FROM {strDt} T1
-                               LEFT JOIN T_BD_CUSTOMER T2 ON T1.fcontactunitnumber=T2.FNUMBER
+                               INNER JOIN T_BD_CUSTOMER T2 ON T1.FCONTACTUNITNUMBER=T2.FNUMBER
                                LEFT JOIN T_CRE_CUSTARCHIVESENTRY T3 ON T2.FCUSTID=T3.FOBJECTID
                           ";
             DBUtils.Execute(Context, strSql);
