@@ -25,7 +25,7 @@ namespace CustAccRptChange
 
             //对初步的查询结果进行处理,然后写回基类默认的存放查询结果的临时表
             var strSql = $@"
-                               SELECT T1.*,ROUND(T3.FCREDITAMOUNT,2) FCREDIT
+                               SELECT T1.*,CAST(T3.FCREDITAMOUNT AS NUMERIC(10,2)) FCREDIT
                                INTO {tableName}
                                FROM {strDt} T1
                                INNER JOIN T_BD_CUSTOMER T2 ON T1.FCONTACTUNITNUMBER=T2.FNUMBER
