@@ -1,4 +1,5 @@
-﻿using Kingdee.BOS;
+﻿using System.Collections.Generic;
+using Kingdee.BOS;
 using Kingdee.BOS.App;
 using Kingdee.BOS.App.Data;
 using Kingdee.BOS.Contracts;
@@ -25,13 +26,25 @@ namespace CustAccRptChange
 
             //对初步的查询结果进行处理,然后写回基类默认的存放查询结果的临时表
             var strSql = $@"
-                               SELECT T1.*,CAST(T3.FCREDITAMOUNT AS NUMERIC(10,2)) FCREDIT
+                               SELECT T1.*,ROUND(T3.FCREDITAMOUNT,0) FCREDIT
                                INTO {tableName}
                                FROM {strDt} T1
                                INNER JOIN T_BD_CUSTOMER T2 ON T1.FCONTACTUNITNUMBER=T2.FNUMBER
                                LEFT JOIN T_CRE_CUSTARCHIVESENTRY T3 ON T2.FCUSTID=T3.FOBJECTID
                           ";
             DBUtils.Execute(Context, strSql);
+        }
+
+        /// <summary>
+        /// 二开汇总列
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public override List<SummaryField> GetSummaryColumnInfo(IRptParams filter)
+        {
+            var result = base.GetSummaryColumnInfo(filter);
+            result.Add(new SummaryField("FCREDIT",Kingdee.BOS.Core.Enums.BOSEnums.Enu_SummaryType.SUM));
+            return result;
         }
 
         /// <summary>
